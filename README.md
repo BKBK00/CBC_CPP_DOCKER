@@ -10,7 +10,8 @@
 - `build-docker.sh` - 构建Docker镜像的脚本
 - `run-docker.sh` - 运行Docker容器的脚本
 - `.dockerignore` - Docker构建时忽略的文件
-- `deploy.sh` - 多功能部署脚本，用于将文件上传到服务器
+- `deploy.sh` - 文件上传部署脚本，用于将文件上传到服务器
+- `save-and-upload-image.sh` - 镜像打包上传脚本，用于在本地构建镜像并上传到服务器
 
 ## 问题描述
 
@@ -50,7 +51,11 @@ x, y, z >= 0 且为整数
 
 ### 在服务器上部署
 
-使用项目自带的部署脚本：
+项目提供了两种部署方式：
+
+#### 方式一：使用文件上传部署脚本（deploy.sh）
+
+这种方式将源代码和配置文件上传到服务器，然后在服务器上构建镜像。
 
 1. **上传所有文件并运行**：
    ```bash
@@ -62,17 +67,22 @@ x, y, z >= 0 且为整数
    ./deploy.sh --code
    ```
 
-3. **上传特定文件**：
-   ```bash
-   ./deploy.sh --file main.cpp
-   ```
-
-4. **查看部署脚本的帮助信息**：
+3. **查看部署脚本的帮助信息**：
    ```bash
    ./deploy.sh --help
    ```
 
-手动部署方式：
+#### 方式二：使用镜像打包上传脚本（save-and-upload-image.sh）
+
+这种方式在本地构建镜像，然后将镜像上传到服务器。适用于服务器资源有限或网络受限的情况。
+
+```bash
+./save-and-upload-image.sh
+```
+
+脚本会自动检测本地和服务器架构，并引导您完成整个过程。
+
+#### 手动部署方式
 
 1. 将项目文件复制到服务器：
    ```bash
@@ -144,9 +154,13 @@ z = 0
 
 ## 部署脚本说明
 
-`deploy.sh` 是一个多功能部署脚本，可以帮助您快速将文件上传到服务器并执行相关操作。
+项目提供了两个部署脚本，可以根据不同需求选择使用：
 
-### 可用选项
+### 1. `deploy.sh` - 文件上传部署脚本
+
+这个脚本将源代码和配置文件上传到服务器，然后在服务器上构建和运行Docker容器。
+
+#### 可用选项
 
 - `-a, --all`：上传所有核心项目文件
 - `-c, --code`：只上传代码文件 (main.cpp 和 CMakeLists.txt)
@@ -156,10 +170,132 @@ z = 0
 - `-f, --file <文件>`：上传指定文件
 - `-h, --help`：显示帮助信息
 
-如果需要修改服务器信息，请编辑脚本开头的配置部分。
+### 2. `save-and-upload-image.sh` - 镜像打包上传脚本
+
+这个脚本在本地构建Docker镜像，然后将镜像保存为tar文件并上传到服务器。这种方法避免了在服务器上进行耗时的编译过程。
+
+#### 主要功能
+
+- 自动检测本地和服务器架构
+- 支持为服务器架构(x86_64)构建镜像，即使本地是ARM架构(M1/M2 Mac)
+- 自动处理架构不匹配的情况
+- 交互式操作，提供清晰的提示和选项
+
+#### 使用场景
+
+当服务器网络受限、计算资源有限或希望确保本地和服务器使用完全相同的镜像时，这个脚本特别有用。
+
+如果需要修改服务器信息，请编辑脚本开头的配置部分：
+
+```bash
+# 服务器配置
+SERVER_HOST="43.139.225.193"
+SERVER_PORT="22"
+SERVER_USER="root"
+SERVER_PATH="/root/CBC"
+```
+
+## Shell脚本常用操作指南
+
+本项目中的Shell脚本使用了多种常用操作和技巧，下面是对这些操作的简要说明：
+
+### 1. 文件上传与下载
+
+```bash
+# 使用scp上传文件到服务器
+scp -P $SERVER_PORT "$file" $SERVER_USER@$SERVER_HOST:$SERVER_PATH/
+
+# 使用scp下载服务器文件
+scp -P $SERVER_PORT $SERVER_USER@$SERVER_HOST:$SERVER_PATH/file.txt .
+```
+
+### 2. 远程命令执行
+
+```bash
+# 在服务器上执行命令
+ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd $SERVER_PATH && ./build-docker.sh"
+
+# 检查服务器架构
+SERVER_ARCH=$(ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "uname -m")
+```
+
+### 3. Docker镜像操作
+
+```bash
+# 构建Docker镜像
+docker build -t $IMAGE_NAME .
+
+# 保存镜像为tar文件
+docker save -o $TAR_FILE $IMAGE_NAME
+
+# 加载镜像
+docker load -i $TAR_FILE
+
+# 跨架构构建
+docker buildx build --platform linux/amd64 -t $IMAGE_NAME .
+```
+
+### 4. 条件判断与循环
+
+```bash
+# if条件判断
+if [ "$LOCAL_ARCH" = "arm64" ]; then
+    echo "ARM架构"
+else
+    echo "x86_64架构"
+fi
+
+# 循环遍历数组
+FILES=("main.cpp" "CMakeLists.txt" "Dockerfile")
+for file in "${FILES[@]}"; do
+    echo "Processing $file"
+done
+```
+
+### 5. 用户交互
+
+```bash
+# 读取用户输入
+read -p "是否继续? (y/n): " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "继续执行"
+fi
+
+# 彩色输出
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+echo -e "${GREEN}成功!${NC}"
+```
+
+### 6. 错误处理
+
+```bash
+# 检查命令执行状态
+command
+if [ $? -ne 0 ]; then
+    echo "命令执行失败"
+    exit 1
+fi
+
+# 使用try-catch风格的错误处理
+{
+    command1
+    command2
+} || {
+    echo "错误处理"
+    exit 1
+}
+```
+
+这些操作在项目的`deploy.sh`和`save-and-upload-image.sh`脚本中广泛使用，您可以通过查看这些脚本来了解它们的实际应用。
 
 ## 参考资料
 
 - [COIN-OR CBC官方文档](https://github.com/coin-or/Cbc)
 - [混合整数规划介绍](https://en.wikipedia.org/wiki/Integer_programming)
 - [Docker文档](https://docs.docker.com/)
+- [Bash脚本指南](https://www.gnu.org/software/bash/manual/bash.html)
+- [SCP命令参考](https://linux.die.net/man/1/scp)
+- [Docker Buildx指南](https://docs.docker.com/buildx/working-with-buildx/)
