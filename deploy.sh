@@ -128,7 +128,7 @@ ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "mkdir -p $SERVER_PATH"
 # 上传文件
 if [[ "$UPLOAD_ALL" == "true" ]]; then
     echo -e "${BLUE}上传所有核心项目文件...${NC}"
-    CORE_FILES=("main.cpp" "CMakeLists.txt" "Dockerfile" ".dockerignore" "docker-compose.yml" "build-docker.sh" "run-docker.sh" "README.md")
+    CORE_FILES=("main.cpp" "CMakeLists.txt" "Dockerfile" ".dockerignore"  "build-docker.sh" "run-docker.sh" "README.md")
     for file in "${CORE_FILES[@]}"; do
         upload_file "$file"
     done
@@ -144,7 +144,6 @@ if [[ "$UPLOAD_DOCKER" == "true" ]]; then
     echo -e "${BLUE}上传Docker相关文件...${NC}"
     upload_file "Dockerfile"
     upload_file ".dockerignore"
-    upload_file "docker-compose.yml"
     upload_file "build-docker.sh"
     upload_file "run-docker.sh"
 fi
