@@ -20,16 +20,16 @@ echo -e "${BLUE}=== 上传Linux可执行文件到服务器 ===${NC}"
 ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "mkdir -p $SERVER_PATH"
 
 # 上传可执行文件
-echo -e "${YELLOW}上传文件: build-linux-simple/CBC${NC}"
-scp -P $SERVER_PORT "build-linux-simple/CBC" $SERVER_USER@$SERVER_HOST:$SERVER_PATH/
+echo -e "${YELLOW}上传文件: ../cpp/build-linux-simple/CBC${NC}"
+scp -P $SERVER_PORT "../cpp/build-linux-simple/CBC" $SERVER_USER@$SERVER_HOST:$SERVER_PATH/
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ 文件上传成功${NC}"
-    
+
     # 设置执行权限并运行
     echo -e "${BLUE}=== 在服务器上运行可执行文件 ===${NC}"
     ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd $SERVER_PATH && chmod +x CBC && ./CBC"
-    
+
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ 程序在服务器上成功运行${NC}"
     else

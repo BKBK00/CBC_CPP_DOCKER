@@ -1,29 +1,57 @@
-# CBC求解器MIP问题示例
+# CBC求解器项目
 
-这个项目展示了如何使用C++版本的CBC（COIN-OR Branch and Cut）求解器来求解混合整数规划（MIP）问题。项目完全使用Docker容器化，无论是本地运行还是部署到服务器，都可以在任何支持Docker的环境中运行，无需担心依赖问题。
+这个项目展示了如何使用CBC（COIN-OR Branch and Cut）求解器来求解混合整数规划（MIP）问题。项目提供了C++和Go两种语言实现，并支持多种部署方案。
 
 ## 项目结构
 
-### 核心文件
-- `main.cpp` - 主程序源代码，包含CBC求解器的使用示例
-- `CMakeLists.txt` - CMake构建配置文件
-
-### Docker相关文件
-- `Dockerfile` - Docker镜像构建配置
-- `build-docker.sh` - 构建Docker镜像的脚本
-- `run-docker.sh` - 运行Docker容器的脚本
-- `.dockerignore` - Docker构建时忽略的文件
-
-### 本地编译脚本
-- `build-native-simple.sh` - 在本地环境直接编译CBC程序的脚本
-
-### 交叉编译脚本
-- `build-for-linux-simple.sh` - 在macOS上编译可在Linux上运行的静态链接可执行文件
-
-### 部署脚本
-- `deploy.sh` - 文件上传部署脚本，用于将文件上传到服务器
-- `save-and-upload-image.sh` - 镜像打包上传脚本，用于在本地构建镜像并上传到服务器
-- `upload-linux-executable.sh` - 上传Linux可执行文件到服务器并运行的脚本
+```
+CBC/
+├── cpp/                      # C++版本目录
+│   ├── main.cpp              # C++示例程序
+│   ├── CMakeLists.txt        # C++构建配置
+│   ├── build-native-simple.sh # 本地C++编译脚本
+│   └── build-for-linux-simple.sh # Linux C++交叉编译脚本
+│
+├── go/                       # Go语言版本目录
+│   ├── cbc/                  # Go CBC包
+│   │   ├── cbc.go            # Go CBC接口
+│   │   └── cbc_test.go       # 测试文件
+│   ├── bridge/               # C++/C桥接层
+│   │   ├── cbc_bridge.h      # C桥接头文件
+│   │   └── cbc_bridge.cpp    # C桥接实现
+│   ├── build-go-native.sh    # Go本地编译脚本
+│   └── build-go-for-linux.sh # Go交叉编译脚本
+│
+├── docker/                   # Docker相关文件
+│   ├── Dockerfile.cpp        # C++版本的Dockerfile
+│   ├── Dockerfile.go         # Go版本的Dockerfile
+│   └── .dockerignore         # Docker忽略文件
+│
+├── scripts/                  # 部署和运行脚本
+│   ├── build-docker-cpp.sh   # 构建C++版Docker镜像
+│   ├── build-docker-go.sh    # 构建Go版Docker镜像
+│   ├── run-docker-cpp.sh     # 运行C++版Docker容器
+│   ├── run-docker-go.sh      # 运行Go版Docker容器
+│   ├── deploy-cpp.sh         # C++版部署脚本
+│   ├── deploy-go.sh          # Go版部署脚本
+│   ├── save-and-upload-image-cpp.sh # C++镜像上传脚本
+│   ├── save-and-upload-image-go.sh  # Go镜像上传脚本
+│   ├── upload-linux-executable-cpp.sh # C++可执行文件上传脚本
+│   └── upload-linux-executable-go.sh  # Go可执行文件上传脚本
+│
+├── examples/                 # 示例程序
+│   ├── cpp/                  # C++示例
+│   │   └── simple_mip.cpp    # 简单MIP问题示例
+│   └── go/                   # Go示例
+│       └── simple_mip.go     # 相同问题的Go实现
+│
+├── docs/                     # 文档目录
+│   ├── cpp-guide.md          # C++版本使用指南
+│   ├── go-guide.md           # Go版本使用指南
+│   └── deployment.md         # 部署指南
+│
+└── README.md                 # 项目主文档
+```
 
 ## 问题描述
 
@@ -47,133 +75,65 @@ x, y, z >= 0 且为整数
 ### 前提条件
 
 - 安装Docker（[Docker安装指南](https://docs.docker.com/get-docker/)）
+- 或安装CBC库及其依赖（[CBC安装指南](https://github.com/coin-or/Cbc)）
+- 对于Go版本，还需要安装Go（[Go安装指南](https://golang.org/doc/install)）
 
-### 本地运行
+### C++版本
 
-1. 克隆或下载本项目
-2. 在项目目录中打开终端
-3. 构建Docker镜像：
-   ```bash
-   ./build-docker.sh
-   ```
-4. 运行Docker容器：
-   ```bash
-   ./run-docker.sh
-   ```
-
-### 在服务器上部署
-
-项目提供了四种部署方式，可根据不同需求选择：
-
-#### 方式一：使用Docker容器（源代码上传）
-
-这种方式将源代码和配置文件上传到服务器，然后在服务器上构建镜像。
+#### 使用Docker
 
 ```bash
-./deploy.sh --all --run
+# 构建Docker镜像
+./scripts/build-docker-cpp.sh
+
+# 运行Docker容器
+./scripts/run-docker-cpp.sh
 ```
 
-**优点：**
-- 简单直接，只需一个命令
-- 服务器上的代码始终与本地保持同步
-
-**缺点：**
-- 需要在服务器上进行编译，可能耗时较长
-- 需要服务器有足够的资源
-
-#### 方式二：使用Docker容器（镜像上传）
-
-这种方式在本地构建镜像，然后将镜像上传到服务器。
+#### 本地编译
 
 ```bash
-./save-and-upload-image.sh
+./cpp/build-native-simple.sh
 ```
 
-**优点：**
-- 避免在服务器上进行耗时的编译
-- 确保本地和服务器使用完全相同的镜像
+### Go版本
 
-**缺点：**
-- 镜像文件可能较大，上传时间较长
-- 需要处理架构差异（如ARM Mac与x86_64服务器）
-
-#### 方式三：使用静态链接的可执行文件
-
-这种方式在本地编译出一个静态链接的Linux可执行文件，然后将其上传到服务器。
+#### 使用Docker
 
 ```bash
-# 编译Linux可执行文件
-./build-for-linux-simple.sh
+# 构建Docker镜像
+./scripts/build-docker-go.sh
 
-# 上传并运行
-./upload-linux-executable.sh
+# 运行Docker容器
+./scripts/run-docker-go.sh
 ```
 
-**优点：**
-- 不需要在服务器上安装Docker
-- 不需要在服务器上安装任何依赖
-- 可执行文件体积小，上传快速
-
-**缺点：**
-- 编译过程复杂，需要交叉编译环境
-- 只能在相同架构的Linux系统上运行
-
-#### 方式四：本地编译运行
-
-如果您只需要在本地运行，可以直接编译和运行：
+#### 本地编译
 
 ```bash
-./build-native-simple.sh
+./go/build-go-native.sh
 ```
 
-**优点：**
-- 最简单直接的方式
-- 不需要Docker
-- 编译和运行速度快
+## 部署方案
 
-**缺点：**
-- 需要在本地安装CBC及其依赖
-- 只能在本地运行，不能直接在其他环境运行
+项目支持四种部署方案：
 
-#### 手动部署方式
+1. **Docker容器（源代码上传）**：将源代码上传到服务器，在服务器上构建Docker镜像
+2. **Docker容器（镜像上传）**：在本地构建Docker镜像，然后上传到服务器
+3. **静态链接可执行文件**：编译静态链接的可执行文件，上传到服务器直接运行
+4. **本地编译运行**：直接在本地编译和运行
 
-如果需要手动部署，可以使用以下命令：
+详细说明请参阅[部署指南](docs/deployment.md)。
 
-```bash
-# 将文件复制到服务器
-scp -r ./* user@your-server:/path/to/destination/
+## 语言实现
 
-# 连接到服务器并运行
-ssh user@your-server
-cd /path/to/destination/
-./build-docker.sh
-./run-docker.sh
-```
+### C++实现
 
-## 代码说明
+C++版本直接使用CBC的C++接口实现。详细说明请参阅[C++使用指南](docs/cpp-guide.md)。
 
-`main.cpp`文件实现了一个使用CBC求解器解决MIP问题的示例。主要步骤包括：
+### Go实现
 
-1. 创建求解器接口（OsiClpSolverInterface）
-2. 设置问题为最大化问题
-3. 定义变量和约束
-4. 设置目标函数系数
-5. 添加约束条件
-6. 设置变量为整数变量
-7. 创建CBC模型并求解
-8. 输出最优解
-
-## Docker镜像说明
-
-Docker镜像基于Ubuntu 22.04，并从源代码编译安装了以下组件：
-
-1. CoinUtils - 基础工具库
-2. Osi - 开放求解器接口
-3. Clp - 线性规划求解器
-4. Cgl - 割平面生成库
-5. CBC - 分支切割求解器
-
-这确保了CBC求解器在容器中正确运行，无需担心依赖问题。
+Go版本通过CGO调用C++桥接层，间接使用CBC的C++接口。详细说明请参阅[Go使用指南](docs/go-guide.md)。
 
 ## 运行结果
 
@@ -191,7 +151,39 @@ z = 0
 
 ## 扩展和修改
 
-如果您想修改问题或扩展功能，可以编辑`main.cpp`文件，然后重新构建Docker镜像。例如，您可以：
+如果您想修改问题或扩展功能，可以编辑示例程序，然后重新构建。例如，您可以：
+
+- 修改目标函数系数
+- 添加或修改约束条件
+- 增加变量数量
+- 尝试不同类型的约束（等式、大于等于）
+
+## 参考资料
+
+- [CBC官方文档](https://github.com/coin-or/Cbc)
+- [COIN-OR项目](https://www.coin-or.org/)
+- [混合整数规划介绍](https://en.wikipedia.org/wiki/Integer_programming)
+- [Go语言CGO文档](https://golang.org/cmd/cgo/)
+- [Docker文档](https://docs.docker.com/)
+
+
+## 运行结果
+
+成功运行后，程序将输出MIP问题的最优解：
+
+```
+找到最优解!
+目标函数值: 732
+x = 33
+y = 67
+z = 0
+```
+
+这表示最优解是x=33, y=67, z=0，此时目标函数值为10×33 + 6×67 + 4×0 = 732。
+
+## 扩展和修改
+
+如果您想修改问题或扩展功能，可以编辑示例程序，然后重新构建。例如，您可以：
 
 - 修改目标函数系数
 - 添加或修改约束条件

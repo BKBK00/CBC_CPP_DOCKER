@@ -4,7 +4,7 @@
 SERVER_HOST="43.139.225.193"
 SERVER_PORT="22"
 SERVER_USER="root"
-SERVER_PATH="/root/CBC"
+SERVER_PATH="/root/CBC4"
 
 # 颜色定义
 RED='\033[0;31m'
@@ -13,9 +13,13 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# 获取脚本目录和项目根目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+
 # 镜像名称
 IMAGE_NAME="cbc-solver"
-TAR_FILE="${IMAGE_NAME}.tar"
+TAR_FILE="${ROOT_DIR}/${IMAGE_NAME}.tar"
 
 # 初始化变量
 BUILT_FOR_SERVER=false
@@ -44,7 +48,7 @@ if [ "$LOCAL_ARCH" = "arm64" ] || [ "$LOCAL_ARCH" = "aarch64" ]; then
 
         # 创建并使用新的builder实例
         docker buildx create --name mybuilder --use || true
-        docker buildx build --platform linux/amd64 -t $IMAGE_NAME -f Dockerfile . --load
+        docker buildx build --platform linux/amd64 -t $IMAGE_NAME -f $ROOT_DIR/docker/Dockerfile.cpp $ROOT_DIR --load
 
         if [ $? -ne 0 ]; then
             echo -e "${RED}为x86_64架构构建失败${NC}"
@@ -56,7 +60,7 @@ if [ "$LOCAL_ARCH" = "arm64" ] || [ "$LOCAL_ARCH" = "aarch64" ]; then
     else
         echo -e "${BLUE}=== 在本地构建Docker镜像（仅$LOCAL_ARCH架构） ===${NC}"
         echo -e "${YELLOW}警告: 如果服务器是x86_64架构，这个镜像可能无法运行${NC}"
-        ./build-docker.sh
+        $ROOT_DIR/build-docker.sh
 
         if [ $? -ne 0 ]; then
             echo -e "${RED}构建Docker镜像失败，请检查错误信息${NC}"
@@ -65,7 +69,7 @@ if [ "$LOCAL_ARCH" = "arm64" ] || [ "$LOCAL_ARCH" = "aarch64" ]; then
     fi
 else
     echo -e "${BLUE}=== 在本地构建Docker镜像 (x86_64架构) ===${NC}"
-    ./build-docker.sh
+    $ROOT_DIR/build-docker.sh
 
     if [ $? -ne 0 ]; then
         echo -e "${RED}构建Docker镜像失败，请检查错误信息${NC}"
@@ -118,7 +122,7 @@ if [ "$LOCAL_ARCH" = "arm64" ] && [ "$SERVER_ARCH" = "x86_64" ] && [ "$BUILT_FOR
     fi
 fi
 
-ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd $SERVER_PATH && docker load -i $TAR_FILE"
+ssh -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "cd $SERVER_PATH && docker load -i $(basename $TAR_FILE)"
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}在服务器上加载镜像失败${NC}"

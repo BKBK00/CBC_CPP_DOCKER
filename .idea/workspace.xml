@@ -19,9 +19,7 @@
     <option name="reloaded" value="true" />
   </component>
   <component name="CMakeRunConfigurationManager">
-    <generated>
-      <config projectName="CBC" targetName="CBC" />
-    </generated>
+    <generated />
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -29,7 +27,32 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fb666f3c-1b7f-411b-9151-f01dbe7ccb17" name="Changes" comment="save and upload" />
+    <list default="true" id="fb666f3c-1b7f-411b-9151-f01dbe7ccb17" name="Changes" comment="&#10;四种不同的构建和部署方案">
+      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-docker.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build-docker.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-for-linux-simple.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux-simple/CBC" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux-simple/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux-simple/compile.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux-simple/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux/compile-simple.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux/compile.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-linux/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-native-simple.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-native-simple/CBC" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build-native-simple/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run-docker.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run-docker.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/save-and-upload-image.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/upload-linux-executable.sh" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,6 +63,11 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
@@ -56,6 +84,9 @@
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2viWGfnR5dlPBxY2x74sW2jpp6I" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -73,7 +104,7 @@
     &quot;Shell Script.upload-modified-files.sh.executor&quot;: &quot;Run&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;try-cgo&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -87,11 +118,6 @@
   <component name="RunManager" selected="Shell Script.upload-modified-files.sh">
     <configuration name="CBC" type="CMakeListConfigurationType" factoryName="CMakeListConfigurationFactory" temporary="true">
       <method v="2" />
-    </configuration>
-    <configuration name="CBC" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="CBC" TARGET_NAME="CBC" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="CBC" RUN_TARGET_NAME="CBC">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
     </configuration>
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
@@ -121,7 +147,6 @@
     </configuration>
     <list>
       <item itemvalue="C/C++ File.main.cpp" />
-      <item itemvalue="CMake Application.CBC" />
       <item itemvalue="CMake Debug.CBC" />
       <item itemvalue="Shell Script.upload-modified-files.sh" />
     </list>
@@ -142,7 +167,7 @@
       <option name="presentableId" value="Default" />
       <updated>1744628281071</updated>
       <workItem from="1744628282708" duration="77000" />
-      <workItem from="1744628368537" duration="9691000" />
+      <workItem from="1744628368537" duration="29368000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -176,7 +201,31 @@
       <option name="project" value="LOCAL" />
       <updated>1744639181512</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="save and upload">
+      <option name="closed" value="true" />
+      <created>1744640273935</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1744640273935</updated>
+    </task>
+    <task id="LOCAL-00006" summary="&#10;四种不同的构建和部署方案">
+      <option name="closed" value="true" />
+      <created>1744721921075</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744721921075</updated>
+    </task>
+    <task id="LOCAL-00007" summary="&#10;四种不同的构建和部署方案">
+      <option name="closed" value="true" />
+      <created>1744721958823</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1744721958823</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,17 +250,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
     <MESSAGE value="save and upload" />
-    <option name="LAST_COMMIT_MESSAGE" value="save and upload" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>95</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="&#10;四种不同的构建和部署方案" />
+    <option name="LAST_COMMIT_MESSAGE" value="&#10;四种不同的构建和部署方案" />
   </component>
 </project>
